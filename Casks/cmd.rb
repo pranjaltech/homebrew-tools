@@ -2,7 +2,7 @@
 cask "cmd" do
   desc "AI-assisted CLI that turns natural language into shell commands"
   homepage "https://github.com/pranjaltech/command"
-  version "0.1.2"
+  version "0.1.3"
 
   livecheck do
     skip "Auto-generated on release."
@@ -12,23 +12,29 @@ cask "cmd" do
 
   on_macos do
     on_intel do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.2/cmd_0.1.2_darwin_amd64.tar.gz"
-      sha256 "c377f9ec437109446954421d306bc66c3ebf31f8a7f3d55df1394a18c63d1554"
+      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_darwin_amd64.tar.gz"
+      sha256 "527bccd92b7468dde469a3616a8ad9934ff2ed5104a47392dc589e0ddc68358f"
     end
     on_arm do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.2/cmd_0.1.2_darwin_arm64.tar.gz"
-      sha256 "32f79452c4ebb4418484eab8521202f3e08e65c0d5c1ee832afe80e10f9d5957"
+      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_darwin_arm64.tar.gz"
+      sha256 "1994b0c802dfe4e5aad981d645b14b963a89eecae250a7e1ce7a6911ca823795"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.2/cmd_0.1.2_linux_amd64.tar.gz"
-      sha256 "6ca066f40b6a5e282d55730196231689d429178c42b234e371458bc654eced1e"
+      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_linux_amd64.tar.gz"
+      sha256 "114da44968ad36bed1ff4f5341e328666bcdcbab0cf6a1cfd869e577168bf557"
     end
     on_arm do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.2/cmd_0.1.2_linux_arm64.tar.gz"
-      sha256 "184778fb2a2c1ff513f9b484fd57f0b0fbea06c124dda8005c1ae0bbc174de2f"
+      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_linux_arm64.tar.gz"
+      sha256 "cb6a92c131aeb177a54e869ac0b2e5db8577fa55befd227f9f7e412513132525"
+    end
+  end
+
+  postflight do
+    if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/cmd"]
     end
   end
 
