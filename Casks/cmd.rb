@@ -2,7 +2,7 @@
 cask "cmd" do
   desc "AI-assisted CLI that turns natural language into shell commands"
   homepage "https://github.com/pranjaltech/command"
-  version "0.1.3"
+  version "0.2"
 
   livecheck do
     skip "Auto-generated on release."
@@ -12,23 +12,23 @@ cask "cmd" do
 
   on_macos do
     on_intel do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_darwin_amd64.tar.gz"
-      sha256 "527bccd92b7468dde469a3616a8ad9934ff2ed5104a47392dc589e0ddc68358f"
+      url "https://github.com/pranjaltech/command/releases/download/0.2/cmd_0.2_darwin_amd64.tar.gz"
+      sha256 "d5761dd272270027b1713191762c4f8c0112c91afb402aa7a3a371b2c425a9ff"
     end
     on_arm do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_darwin_arm64.tar.gz"
-      sha256 "1994b0c802dfe4e5aad981d645b14b963a89eecae250a7e1ce7a6911ca823795"
+      url "https://github.com/pranjaltech/command/releases/download/0.2/cmd_0.2_darwin_arm64.tar.gz"
+      sha256 "147e77c388ace28d9366f5c4ee34187692b963173d91557ac3489666cd1a2c73"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_linux_amd64.tar.gz"
-      sha256 "114da44968ad36bed1ff4f5341e328666bcdcbab0cf6a1cfd869e577168bf557"
+      url "https://github.com/pranjaltech/command/releases/download/0.2/cmd_0.2_linux_amd64.tar.gz"
+      sha256 "14ce7a99476ca4b3266341d1101112252ae4998be64efa16ea392fccea9993b3"
     end
     on_arm do
-      url "https://github.com/pranjaltech/command/releases/download/0.1.3/cmd_0.1.3_linux_arm64.tar.gz"
-      sha256 "cb6a92c131aeb177a54e869ac0b2e5db8577fa55befd227f9f7e412513132525"
+      url "https://github.com/pranjaltech/command/releases/download/0.2/cmd_0.2_linux_arm64.tar.gz"
+      sha256 "b190591ef373b65f26e15d37d2e0fd381a0f8172ba46b48baba5f0ecc8c8c6b9"
     end
   end
 
