@@ -1,4 +1,4 @@
-# Pranjaltech Tools
+# My Homebrew Tap
 
 ## How do I install these formulae?
 
@@ -12,7 +12,3 @@ Or, in a `brew bundle` `Brewfile`:
 tap "pranjaltech/tools"
 brew "<formula>"
 ```
-
-## Documentation
-
-`brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
