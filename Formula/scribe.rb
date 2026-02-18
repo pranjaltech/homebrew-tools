@@ -11,17 +11,10 @@ class Scribe < Formula
   depends_on "cairo"
   depends_on "pango"
   depends_on "libffi"
-  depends_on "node" => :build
   depends_on :macos
   depends_on arch: :arm64
 
   def install
-    # Build frontend assets
-    cd "web" do
-      system "npm", "ci", "--ignore-scripts"
-      system "npm", "run", "build"
-    end
-
     # Create virtualenv and install Python deps using uv
     system "uv", "sync", "--frozen", "--no-dev", "--directory", buildpath.to_s
 
@@ -30,6 +23,7 @@ class Scribe < Formula
     libexec.install ".venv"
     libexec.install "pyproject.toml"
     libexec.install "uv.lock"
+    # Frontend is pre-built in the release tarball
     (libexec/"web"/"dist").install Dir["web/dist/*"]
 
     # Create the scribe-server wrapper script
