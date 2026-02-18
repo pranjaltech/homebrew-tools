@@ -1,6 +1,6 @@
 cask "scribe" do
   version "0.4.0"
-  sha256 "PLACEHOLDER_SHA256"
+  sha256 "d33a5dc8422791c95aa5f79872de973710b7ac253859d2786ad3d8f1a3dc46bc"
 
   url "https://github.com/pranjaltech/scribe/releases/download/v#{version}/Scribe-#{version}-aarch64.dmg"
   name "Scribe"
