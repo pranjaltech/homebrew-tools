@@ -6,6 +6,7 @@ class Scribe < Formula
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
+  depends_on "python@3"
   depends_on "uv"
   depends_on "ffmpeg"
   depends_on "cairo"
@@ -15,8 +16,14 @@ class Scribe < Formula
   depends_on arch: :arm64
 
   def install
-    # Create virtualenv and install Python deps using uv
-    system "uv", "sync", "--frozen", "--no-dev", "--directory", buildpath.to_s
+    python = Formula["python@3"].opt_bin/"python3"
+
+    # Create virtualenv with Homebrew Python (not uv-managed) so the
+    # venv symlink survives after the build temp dir is cleaned up.
+    system "uv", "sync", "--frozen", "--no-dev",
+           "--python", python,
+           "--no-managed-python",
+           "--directory", buildpath.to_s
 
     # Install everything into libexec (private prefix)
     libexec.install Dir["scribe"]
