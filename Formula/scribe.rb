@@ -15,6 +15,9 @@ class Scribe < Formula
   depends_on :macos
   depends_on arch: :arm64
 
+  # Ensure scribe-server symlink is created even when installed as a cask dependency
+  link_overwrite "bin/scribe-server"
+
   def install
     python = Formula["python@3"].opt_bin/"python3"
 
