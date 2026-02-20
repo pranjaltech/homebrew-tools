@@ -1,8 +1,8 @@
 class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
-  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.4.1/scribe-0.4.1.tar.gz"
-  sha256 "b835c18b689154d066236b83e9a4bef65988879250fa21d81d4f705fcba86b4e"
+  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.4.2/scribe-0.4.2.tar.gz"
+  sha256 "e4d79769e3a67f05d947567f94f05a3952bd43d8a3fcb3e2049657d95bb23f6f"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
@@ -18,12 +18,18 @@ class Scribe < Formula
   # Ensure scribe-server symlink is created even when installed as a cask dependency
   link_overwrite "bin/scribe-server"
 
+  # Prevent Homebrew from rewriting dylib IDs inside the Python venv.
+  # The cryptography package ships a Rust-compiled .abi3.so whose Mach-O
+  # header is too small for the longer absolute install path.
+  skip_clean "libexec"
+
   def install
     python = Formula["python@3"].opt_bin/"python3"
 
-    # Create virtualenv with Homebrew Python (not uv-managed) so the
-    # venv symlink survives after the build temp dir is cleaned up.
+    # Install only dependencies (not the project itself) — the wrapper
+    # script runs the source tree directly.
     system "uv", "sync", "--frozen", "--no-dev",
+           "--no-install-project",
            "--python", python,
            "--no-managed-python",
            "--directory", buildpath.to_s
@@ -45,7 +51,6 @@ class Scribe < Formula
   end
 
   def post_install
-    # Create data directories
     (var/"log/scribe").mkpath
     (var/"scribe/downloads").mkpath
   end
@@ -71,7 +76,6 @@ class Scribe < Formula
   end
 
   test do
-    # Verify the server can start (will fail to bind if port is taken, but import works)
     assert_match "scribe.main",
       shell_output("#{libexec}/.venv/bin/python -c 'import scribe.main; print(scribe.main.__name__)'")
   end
