@@ -1,8 +1,8 @@
 class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
-  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.3/scribe-0.7.3.tar.gz"
-  sha256 "5f08d7050b8cfa894490d0aec714fedffa9065bde4c84eca97aa8c340f9bfdac"
+  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.4/scribe-0.7.4.tar.gz"
+  sha256 "4e363636875dea6148db073cf5f6b14d67866eabb8b793db579c7abf90014b85"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
@@ -18,25 +18,10 @@ class Scribe < Formula
   # Ensure scribe-server symlink is created even when installed as a cask dependency
   link_overwrite "bin/scribe-server"
 
-  # Prevent Homebrew from rewriting dylib IDs inside the Python venv.
-  # The cryptography package ships a Rust-compiled .abi3.so whose Mach-O
-  # header is too small for the longer absolute install path.
-  skip_clean "libexec"
-
   def install
-    python = Formula["python@3.13"].opt_bin/"python3.13"
-
-    # Install only dependencies (not the project itself) — the wrapper
-    # script runs the source tree directly.
-    system "uv", "sync", "--frozen", "--no-dev",
-           "--no-install-project",
-           "--python", python,
-           "--no-managed-python",
-           "--directory", buildpath.to_s
-
-    # Install everything into libexec (private prefix)
+    # Install source code, config, and frontend into libexec.
+    # The Python venv is created in post_install (see below).
     libexec.install Dir["scribe"]
-    libexec.install ".venv"
     libexec.install "pyproject.toml"
     libexec.install "uv.lock"
     # Frontend is pre-built in the release tarball
@@ -56,6 +41,19 @@ class Scribe < Formula
   end
 
   def post_install
+    # Create the Python venv in post_install so it exists AFTER Homebrew's
+    # fix_dynamic_linkage step (which runs between install and post_install).
+    # The cryptography package ships a Rust-compiled .abi3.so whose Mach-O
+    # header is too small for the absolute cellar path that relocation
+    # tries to write — skip_clean doesn't help because fix_dynamic_linkage
+    # is a separate code path that ignores it.
+    python = Formula["python@3.13"].opt_bin/"python3.13"
+    system "uv", "sync", "--frozen", "--no-dev",
+           "--no-install-project",
+           "--python", python,
+           "--no-managed-python",
+           "--directory", libexec.to_s
+
     (var/"log/scribe").mkpath
     (var/"scribe/downloads").mkpath
   end
