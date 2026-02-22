@@ -1,12 +1,12 @@
 class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
-  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.2/scribe-0.7.2.tar.gz"
-  sha256 "580ec9372f5e5dbb9242dccef06d8ba8d761ca932620567be0361d9e389e2c80"
+  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.3/scribe-0.7.3.tar.gz"
+  sha256 "5f08d7050b8cfa894490d0aec714fedffa9065bde4c84eca97aa8c340f9bfdac"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
-  depends_on "python@3"
+  depends_on "python@3.13"
   depends_on "uv"
   depends_on "ffmpeg"
   depends_on "cairo"
@@ -24,7 +24,7 @@ class Scribe < Formula
   skip_clean "libexec"
 
   def install
-    python = Formula["python@3"].opt_bin/"python3"
+    python = Formula["python@3.13"].opt_bin/"python3.13"
 
     # Install only dependencies (not the project itself) — the wrapper
     # script runs the source tree directly.
