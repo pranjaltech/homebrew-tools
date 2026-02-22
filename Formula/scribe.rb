@@ -2,7 +2,7 @@ class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.0/scribe-0.7.0.tar.gz"
-  sha256 "ca134466bf7e6b4bc7606922ccf198499d36f72554e7f3d93a502091a502051c"
+  sha256 "1301c1f821c07c91a292d77a9b10352e5784924d42387b951630a6b66750a2ce"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
@@ -42,9 +42,14 @@ class Scribe < Formula
     # Frontend is pre-built in the release tarball
     (libexec/"web"/"dist").install Dir["web/dist/*"]
 
-    # Create the scribe-server wrapper script
+    # Create the scribe-server wrapper script.
+    # Default to production port/env so the Tauri Mac app finds it via the
+    # state file at ~/.scribe/scribe-production.state.  Override with
+    # SCRIBE_ENV=dev or SCRIBE_PORT=8080 for manual dev use.
     (bin/"scribe-server").write <<~BASH
       #!/bin/bash
+      export SCRIBE_PORT="${SCRIBE_PORT:-8090}"
+      export SCRIBE_ENV="${SCRIBE_ENV:-production}"
       export DYLD_FALLBACK_LIBRARY_PATH="#{HOMEBREW_PREFIX}/lib:#{HOMEBREW_PREFIX}/opt/libffi/lib:#{HOMEBREW_PREFIX}/opt/cairo/lib:#{HOMEBREW_PREFIX}/opt/pango/lib"
       exec "#{libexec}/.venv/bin/python" "#{libexec}/scribe/main.py" "$@"
     BASH
