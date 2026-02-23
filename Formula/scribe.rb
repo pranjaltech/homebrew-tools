@@ -1,8 +1,8 @@
 class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
-  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.5/scribe-0.7.5.tar.gz"
-  sha256 "5353676c9b49c6fd17d97e9801bcf0c894227100bf0bb5a790b263e7731d1771"
+  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.6/scribe-0.7.6.tar.gz"
+  sha256 "657c3ffe589e51aeef127f0c16afc982d5ed9767a6d82f4c33a6c80c2d0a0df5"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
@@ -18,10 +18,43 @@ class Scribe < Formula
   # Ensure scribe-server symlink is created even when installed as a cask dependency
   link_overwrite "bin/scribe-server"
 
+  # Prevent Homebrew's Cleaner from touching the Python venv.
+  skip_clean "libexec"
+
   def install
-    # Install source code, config, and frontend into libexec.
-    # The Python venv is created in post_install (see below).
+    python = Formula["python@3.13"].opt_bin/"python3.13"
+
+    # Install only dependencies (not the project itself) — the wrapper
+    # script runs the source tree directly.
+    system "uv", "sync", "--frozen", "--no-dev",
+           "--no-install-project",
+           "--python", python,
+           "--no-managed-python",
+           "--directory", buildpath.to_s
+
+    # Fix .abi3.so Mach-O filetype: cryptography's Rust-compiled _rust.abi3.so
+    # is built as MH_DYLIB (6), but Homebrew's fix_dynamic_linkage tries to
+    # rewrite dylib IDs for MH_DYLIB files — and the header is too small for
+    # the long cellar path, causing "Failed to fix install linkage" errors.
+    # Changing to MH_BUNDLE (8) is correct (Python extensions ARE bundles,
+    # loaded via dlopen) and makes Homebrew skip the dylib ID rewrite.
+    # Other packages (e.g. Cryptodome in yt-dlp) already ship as MH_BUNDLE.
+    Dir.glob("#{buildpath}/.venv/**/*.abi3.so").each do |so|
+      File.open(so, "r+b") do |f|
+        magic = f.read(4).unpack1("V")
+        next unless magic == 0xFEEDFACF # 64-bit little-endian Mach-O
+        f.seek(12)
+        filetype = f.read(4).unpack1("V")
+        next unless filetype == 6 # MH_DYLIB
+        f.seek(12)
+        f.write([8].pack("V")) # MH_BUNDLE
+      end
+      system "codesign", "--force", "--sign", "-", so
+    end
+
+    # Install everything into libexec (private prefix)
     libexec.install Dir["scribe"]
+    libexec.install ".venv"
     libexec.install "pyproject.toml"
     libexec.install "uv.lock"
     # Frontend is pre-built in the release tarball
@@ -41,19 +74,6 @@ class Scribe < Formula
   end
 
   def post_install
-    # Create the Python venv in post_install so it exists AFTER Homebrew's
-    # fix_dynamic_linkage step (which runs between install and post_install).
-    # The cryptography package ships a Rust-compiled .abi3.so whose Mach-O
-    # header is too small for the absolute cellar path that relocation
-    # tries to write — skip_clean doesn't help because fix_dynamic_linkage
-    # is a separate code path that ignores it.
-    python = Formula["python@3.13"].opt_bin/"python3.13"
-    system "uv", "sync", "--frozen", "--no-dev",
-           "--no-install-project",
-           "--python", python,
-           "--no-managed-python",
-           "--directory", libexec.to_s
-
     (var/"log/scribe").mkpath
     (var/"scribe/downloads").mkpath
   end
