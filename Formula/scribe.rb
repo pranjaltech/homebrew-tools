@@ -1,8 +1,8 @@
 class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
-  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.7-rc.1/scribe-0.7.7-rc.1.tar.gz"
-  sha256 "f3675adc8b5f44a987a272588f20fbe245e1135c54a0d184f709189f920cf16a"
+  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.7/scribe-0.7.7.tar.gz"
+  sha256 "c96cee3c76f504ceda522b07095eeb8d407a59d652d721057fe534f612215a41"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
@@ -26,11 +26,23 @@ class Scribe < Formula
 
     # Install only dependencies (not the project itself) — the wrapper
     # script runs the source tree directly.
+    # Let uv use its own managed Python for the sync step: on macOS 26+,
+    # Homebrew's Python has a broken platform.mac_ver() that uv rejects.
     system "uv", "sync", "--frozen", "--no-dev",
            "--no-install-project",
-           "--python", python,
-           "--no-managed-python",
+           "--python", "3.13",
            "--directory", buildpath.to_s
+
+    # Repoint the venv from uv's managed Python to Homebrew's Python.
+    # Homebrew's Python works fine at runtime — only uv's inspection rejects it.
+    pyvenv_cfg = buildpath/".venv/pyvenv.cfg"
+    cfg_text = pyvenv_cfg.read
+    cfg_text.gsub!(/^home = .*$/, "home = #{Formula["python@3.13"].opt_bin}")
+    File.write(pyvenv_cfg, cfg_text)
+
+    venv_python = buildpath/".venv/bin/python"
+    venv_python.unlink
+    venv_python.make_symlink(python)
 
     # Fix .abi3.so Mach-O filetype: cryptography's Rust-compiled _rust.abi3.so
     # is built as MH_DYLIB (6), but Homebrew's fix_dynamic_linkage tries to
