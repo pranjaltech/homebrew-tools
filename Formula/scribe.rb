@@ -1,8 +1,8 @@
 class Scribe < Formula
   desc "Video to Article Generator - AI-powered transcription and article generation"
   homepage "https://github.com/pranjaltech/scribe"
-  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.7.7/scribe-0.7.7.tar.gz"
-  sha256 "c96cee3c76f504ceda522b07095eeb8d407a59d652d721057fe534f612215a41"
+  url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v0.8.0/scribe-0.8.0.tar.gz"
+  sha256 "2f0a615046a6a60b591df240f58955b9650532044187660fdeb130b1ed1b01d2"
   license "MIT"
   head "https://github.com/pranjaltech/scribe.git", branch: "main"
 
