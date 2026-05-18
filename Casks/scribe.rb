@@ -7,8 +7,12 @@ cask "scribe" do
   desc "Video to Article Generator - AI-powered transcription and content creation"
   homepage "https://github.com/pranjaltech/scribe"
 
-  # Auto-install the backend formula when installing the cask
-  depends_on formula: "pranjaltech/tools/scribe"
+  # Runtime system libraries the bundled Python venv loads via
+  # DYLD_FALLBACK_LIBRARY_PATH (see scribe/main.py:24–28).
+  depends_on formula: "ffmpeg"
+  depends_on formula: "cairo"
+  depends_on formula: "pango"
+  depends_on formula: "libffi"
   depends_on macos: ">= :ventura"
   depends_on arch: :arm64
 
@@ -25,4 +29,14 @@ cask "scribe" do
     "~/Library/Logs/Scribe",
     "~/.scribe",
   ]
+
+  caveats <<~EOS
+    On first launch Scribe bootstraps a private Python runtime at
+    ~/.scribe/runtime/ via a bundled `uv` sidecar. The download takes
+    ~60-120s and requires an internet connection; subsequent launches
+    are instant.
+
+    To wipe and re-bootstrap (e.g. after a corrupted install), use the
+    menu-bar Scribe icon → Reset Scribe runtime…
+  EOS
 end
