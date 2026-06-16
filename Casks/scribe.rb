@@ -1,6 +1,6 @@
 cask "scribe" do
-  version "0.13.0-rc.3"
-  sha256 "9ccb2929c3a952b5455e7b3f7fbe249a5cc59e14f1e680d1a45c027184977147"
+  version "0.12.2"
+  sha256 "79b72b7d9a51531d7694654a42a27291fcefc77eba06ac52adc8f836bd61202e"
 
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v#{version}/Scribe-#{version}-aarch64.dmg"
   name "Scribe"
