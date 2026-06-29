@@ -23,11 +23,11 @@ cask "scribe" do
 
   # Clean uninstall: remove all app data
   zap trash: [
+    "~/.scribe",
     "~/Library/Application Support/Scribe",
-    "~/Library/Preferences/com.scribe.app.plist",
     "~/Library/Caches/com.scribe.app",
     "~/Library/Logs/Scribe",
-    "~/.scribe",
+    "~/Library/Preferences/com.scribe.app.plist",
   ]
 
   caveats <<~EOS
