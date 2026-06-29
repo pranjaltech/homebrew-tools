@@ -13,7 +13,7 @@ cask "scribe" do
   depends_on formula: "cairo"
   depends_on formula: "pango"
   depends_on formula: "libffi"
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
   depends_on arch: :arm64
 
   app "Scribe.app"
@@ -23,11 +23,11 @@ cask "scribe" do
 
   # Clean uninstall: remove all app data
   zap trash: [
+    "~/.scribe",
     "~/Library/Application Support/Scribe",
-    "~/Library/Preferences/com.scribe.app.plist",
     "~/Library/Caches/com.scribe.app",
     "~/Library/Logs/Scribe",
-    "~/.scribe",
+    "~/Library/Preferences/com.scribe.app.plist",
   ]
 
   caveats <<~EOS
