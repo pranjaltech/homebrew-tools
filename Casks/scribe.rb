@@ -13,7 +13,7 @@ cask "scribe" do
   depends_on formula: "cairo"
   depends_on formula: "pango"
   depends_on formula: "libffi"
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
   depends_on arch: :arm64
 
   app "Scribe.app"
