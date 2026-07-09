@@ -1,9 +1,9 @@
-cask "scribe" do
+cask "scribe@beta" do
   version "0.14.0"
   sha256 "d680ae359429019f82790542ded2f6a30ff69ac83424e13c2281b5a90faf9fe4"
 
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v#{version}/Scribe-#{version}-aarch64.dmg"
-  name "Scribe"
+  name "Scribe Beta"
   desc "Video to Article Generator - AI-powered transcription and content creation"
   homepage "https://github.com/pranjaltech/scribe"
 
