@@ -1,6 +1,6 @@
 cask "scribe" do
-  version "0.17.0"
-  sha256 "6994778ef1fc2492a2cf736bc011f5930ce8b684129709e3c4965d22b9b0e49e"
+  version "0.19.0"
+  sha256 "11e7aca86be7243c97610bb8b433625fe011405f98c0f7a555a1c6ef3905a490"
 
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v#{version}/Scribe-#{version}-aarch64.dmg"
   name "Scribe"
@@ -8,7 +8,7 @@ cask "scribe" do
   homepage "https://github.com/pranjaltech/scribe"
 
   # Runtime system libraries the bundled Python venv loads via
-  # DYLD_FALLBACK_LIBRARY_PATH (see scribe/main.py:24–28).
+  # DYLD_FALLBACK_LIBRARY_PATH (see scribe/main.py).
   depends_on formula: "ffmpeg"
   depends_on formula: "cairo"
   depends_on formula: "pango"
@@ -18,16 +18,23 @@ cask "scribe" do
 
   app "Scribe.app"
 
-  # Quit the app before uninstalling
+  # Quit the app before uninstalling.
   uninstall quit: "com.scribe.app"
 
-  # Clean uninstall: remove all app data
+  # Clean uninstall. ~/.scribe holds the entire provisioned runtime — venv,
+  # bundled Python interpreter, source, web dist, AND uv's cache (pinned under
+  # ~/.scribe/cache/uv by the app so it is captured here rather than orphaned in
+  # ~/.cache/uv). The remaining entries are bundle-id-keyed OS residue.
   zap trash: [
     "~/.scribe",
-    "~/Library/Application Support/Scribe",
-    "~/Library/Caches/com.scribe.app",
     "~/Library/Logs/Scribe",
+    "~/Library/Caches/com.scribe.app",
+    "~/Library/WebKit/com.scribe.app",
+    "~/Library/HTTPStorages/com.scribe.app",
     "~/Library/Preferences/com.scribe.app.plist",
+    "~/Library/Saved Application State/com.scribe.app.savedState",
+    # Sandbox container for the bundled "Send to Scribe" Safari app-extension.
+    "~/Library/Containers/com.scribe.app.Extension",
   ]
 
   caveats <<~EOS
