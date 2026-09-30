@@ -1,6 +1,6 @@
 cask "scribe" do
-  version "0.25.0"
-  sha256 "cd21cf09b4ef2123552ac47ae596a70e11b262d677f4728511de8adb50a1a346"
+  version "0.26.1"
+  sha256 "1ac15b9566e90656b12b552c244473e896194c5779a2e84def8d947212627ca4"
 
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v#{version}/Scribe-#{version}-aarch64.dmg"
   name "Scribe"
@@ -21,29 +21,52 @@ cask "scribe" do
   # Quit the app before uninstalling.
   uninstall quit: "com.scribe.app"
 
-  # Clean uninstall. ~/.scribe holds the entire provisioned runtime — venv,
-  # bundled Python interpreter, source, web dist, AND uv's cache (pinned under
-  # ~/.scribe/cache/uv by the app so it is captured here rather than orphaned in
-  # ~/.cache/uv). The remaining entries are bundle-id-keyed OS residue.
+  # Clean uninstall. Application Support holds settings, state files, X tokens
+  # and the provisioned Python runtime; Caches holds the working folder
+  # (downloaded videos while a job runs), uv's and yt-dlp's caches and WebKit's
+  # HTTP cache. docs/storage.md lists every path the app writes.
   zap trash: [
-    "~/.scribe",
-    "~/Library/Logs/Scribe",
+    "~/Library/Application Support/com.scribe.app",
     "~/Library/Caches/com.scribe.app",
+    "~/Library/Logs/Scribe",
     "~/Library/WebKit/com.scribe.app",
     "~/Library/HTTPStorages/com.scribe.app",
     "~/Library/Preferences/com.scribe.app.plist",
     "~/Library/Saved Application State/com.scribe.app.savedState",
+    # Left by "Remove All Scribe Data…" when its after-exit delete is stopped (a logout).
+    "~/Library/Caches/com.scribe.app.removing-*",
+    "~/Library/WebKit/com.scribe.app.removing-*",
+    "~/Library/HTTPStorages/com.scribe.app.removing-*",
+    "~/Library/Preferences/com.scribe.app.plist.removing-*",
+    "~/Library/Saved Application State/com.scribe.app.savedState.removing-*",
+    "~/Library/Logs/Scribe.removing-*",
     # Sandbox container for the bundled "Send to Scribe" Safari app-extension.
     "~/Library/Containers/com.scribe.app.Extension",
+    "~/Library/Application Scripts/com.scribe.app.Extension",
+    # Where versions before 0.26.0 kept everything: the runtime and settings
+    # in ~/.scribe, the working folder in $TMPDIR/Scribe. The app migrates
+    # them on first launch; these catch an install that never got that far.
+    # A working folder the user picked in Settings is theirs and is not removed.
+    "~/.scribe",
+    "/private/var/folders/*/*/T/Scribe",
+    # Copies of browser cookies for yt-dlp; normally deleted after each
+    # download, left behind only if the backend was killed mid-download.
+    "/private/var/folders/*/*/T/scribe-cookies-*.txt",
+    # WebKit and Metal scratch for the app's webview and its helper processes.
+    "/private/var/folders/*/*/C/com.scribe.app",
+    "/private/var/folders/*/*/T/com.scribe.app",
+    "/private/var/folders/*/*/*/com.apple.WebKit.*+com.scribe.app",
   ]
 
   caveats <<~EOS
-    On first launch Scribe bootstraps a private Python runtime at
-    ~/.scribe/runtime/ via a bundled `uv` sidecar. The download takes
-    ~60-120s and requires an internet connection; subsequent launches
-    are instant.
+    On first launch Scribe sets up a private Python runtime in
+    ~/Library/Application Support/com.scribe.app/runtime via a bundled `uv`
+    sidecar. The download takes ~60-120s and requires an internet
+    connection; subsequent launches are instant.
 
     To wipe and re-bootstrap (e.g. after a corrupted install), use the
-    menu-bar Scribe icon → Reset Scribe runtime…
+    menu-bar Scribe icon → Reset Scribe runtime… To remove everything Scribe
+    keeps on this Mac, use Remove All Scribe Data… there, or run
+    `brew uninstall --zap scribe`.
   EOS
 end
