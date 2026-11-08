@@ -1,6 +1,6 @@
 cask "scribe@beta" do
-  version "0.26.2"
-  sha256 "528642c0914effa721b4d160c63fc81d87a0050cbf62aabc2a7edaa636802ed2"
+  version "0.32.0"
+  sha256 "0cf9a7a90b8a0cbff078833976120f0f9624e5ae02c62fd9223006ebe4ea7d62"
 
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v#{version}/Scribe-#{version}-aarch64.dmg"
   name "Scribe Beta"
@@ -13,7 +13,7 @@ cask "scribe@beta" do
   depends_on formula: "cairo"
   depends_on formula: "pango"
   depends_on formula: "libffi"
-  depends_on macos: :ventura
+  depends_on macos: :sonoma
   depends_on arch: :arm64
 
   app "Scribe.app"
