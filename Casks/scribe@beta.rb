@@ -1,10 +1,10 @@
 cask "scribe@beta" do
-  version "0.32.0"
-  sha256 "0cf9a7a90b8a0cbff078833976120f0f9624e5ae02c62fd9223006ebe4ea7d62"
+  version "0.33.0-rc.1"
+  sha256 "333bb85e7122995765789fb8f2ee6350f7a50155c5a033a747047b5d9bbe9543"
 
   url "https://github.com/pranjaltech/homebrew-tools/releases/download/scribe-v#{version}/Scribe-#{version}-aarch64.dmg"
   name "Scribe Beta"
-  desc "Video to Article Generator - AI-powered transcription and content creation"
+  desc "Turn videos, web pages and X posts into readable articles"
   homepage "https://github.com/pranjaltech/scribe"
 
   # Runtime system libraries the bundled Python venv loads via
@@ -59,14 +59,12 @@ cask "scribe@beta" do
   ]
 
   caveats <<~EOS
-    On first launch Scribe sets up a private Python runtime in
-    ~/Library/Application Support/com.scribe.app/runtime via a bundled `uv`
-    sidecar. The download takes ~60-120s and requires an internet
-    connection; subsequent launches are instant.
+    The first launch, and the first launch after each update, sets Scribe
+    up: about a minute or two, online.
 
-    To wipe and re-bootstrap (e.g. after a corrupted install), use the
-    menu-bar Scribe icon → Reset Scribe runtime… To remove everything Scribe
-    keeps on this Mac, use Remove All Scribe Data… there, or run
-    `brew uninstall --zap scribe`.
+    If Scribe ever won’t start, choose Help ▸ Troubleshooting ▸ Reinstall
+    Scribe’s Helper… (also in the menu-bar icon’s Troubleshooting menu). To
+    remove everything Scribe keeps on this Mac, choose Remove All Scribe
+    Data… there, or run `brew uninstall --zap scribe`.
   EOS
 end
